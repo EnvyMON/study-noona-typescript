@@ -21,6 +21,6 @@ function App() {
 			</Routes>
 		</Suspense>
 	)
-}
+}	
 
 export default App

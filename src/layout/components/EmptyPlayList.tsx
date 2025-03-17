@@ -23,7 +23,7 @@ const CreatePlaylistButton = styled(Button)({
 const EmptyPlayList = () => {
   return (
 	<ContentBox>
-		<Typography variant='subtitle1' fontWeight={700}>Create your first playlist</Typography>
+		<Typography sx={{fontSize: '15px', fontWeight: 'bold'}}>Create your first playlist</Typography>
 		<Typography variant='body1'>it's easy. we'll help you</Typography>
 		<CreatePlaylistButton variant="contained" color="secondary" sx={{fontSize: '12pt'}}>
 			Create playlist
