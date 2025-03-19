@@ -1,9 +1,9 @@
 import EmptyPlayList from './EmptyPlayList'
 
 const LibraryList = () => {
-  return (
-	<EmptyPlayList />
-  )
+	return (
+		<EmptyPlayList />
+	)
 }
 
 export default LibraryList

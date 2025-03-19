@@ -1,7 +1,8 @@
-import { Box, styled } from '@mui/material'
+import { Box, Button, styled } from '@mui/material'
 import LoginButton from '../../common/components/LoginButton'
-import { userGetLoginUserProfile } from '../../hooks/userGetLoginUserProfile'
+import { userGetLoginUserProfile } from '../../hooks/useGetLoginUserProfile'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useState } from 'react';
 
 
 const ProfileImageBox = styled(Box)(({ theme })=>({
@@ -16,12 +17,40 @@ const ProfileImageBox = styled(Box)(({ theme })=>({
 	cursor: 'pointer'
 }))
 
+const ProfileInfoBox = styled(Button)(({ theme })=>({
+	width: '200px', // 원하는 크기
+	height: '55px', // 원하는 크기
+	display: 'flex',
+	backgroundColor: theme.palette.action.hover,
+	borderRadius: 0,
+	paddingLeft: "20px",
+	justifyContent: 'start',
+	alignItems: 'center',
+	border: 'none', // 테두리 추가 (옵션)
+	cursor: 'pointer',
+	position: 'absolute',
+	zIndex: 3,
+	top: "100px",
+	right: "45px",
+	fontSize: "13pt",
+	color: 'white'
+}))
 
 
 const NavBar = () => {
 
 	const {data: userProfile} = userGetLoginUserProfile();
-	console.log(userProfile)
+	const [showMenu, setShowMenu] = useState(false);
+
+	const showProfileBox = () => {
+		setShowMenu(prev => !prev); 
+	}
+
+	const logout = (event: React.MouseEvent) => {
+		event.stopPropagation(); 
+		localStorage.removeItem('access_token');
+		window.location.href = '/';
+	}
 
 	return (
 		<Box sx={{
@@ -34,12 +63,18 @@ const NavBar = () => {
 			{
 				userProfile ? (
 					userProfile.images[0] ? (
-						<ProfileImageBox >
+						<ProfileImageBox onClick={showProfileBox}>
 							<img
 								src={userProfile.images[0].url}
 								alt="profile-image"
 								style={{ width: '100%', height: '100%', objectFit: 'cover' }} // 이미지가 박스를 꽉 채우도록
 							/>
+							{
+								showMenu && (
+									<ProfileInfoBox onClick={logout}>Log out</ProfileInfoBox>
+								)
+							}
+							
 						</ProfileImageBox>
 					) : (
 						<ProfileImageBox >

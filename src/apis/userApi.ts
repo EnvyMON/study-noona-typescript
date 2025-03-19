@@ -18,3 +18,20 @@ export const getLoginUserProfile = async(userToken: string): Promise<UserProfile
         throw new Error('fail to getLoginUserProfile')
     }
 }
+
+export const getLoginUserPlaylist = async(userToken: string): Promise<UserProfileType> => {
+    try {
+        const url = `${spotifyBaseUrl}/me/playlists`;
+        const response = await axios.get(
+            url,
+            {
+				headers: {
+					Authorization: `Bearer ${userToken}`
+				}
+			}
+        )
+        return response.data
+    } catch (error) {
+        throw new Error('fail to getLoginUserPlaylist')
+    }
+}
