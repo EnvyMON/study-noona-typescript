@@ -1,6 +1,6 @@
 import { Box, Button, styled } from '@mui/material'
 import LoginButton from '../../common/components/LoginButton'
-import { userGetLoginUserProfile } from '../../hooks/useGetLoginUserProfile'
+import { useGetLoginUserProfile } from '../../hooks/useGetLoginUserProfile'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useState } from 'react';
 
@@ -39,7 +39,7 @@ const ProfileInfoBox = styled(Button)(({ theme })=>({
 
 const NavBar = () => {
 
-	const {data: userProfile} = userGetLoginUserProfile();
+	const {data: userProfile} = useGetLoginUserProfile();
 	const [showMenu, setShowMenu] = useState(false);
 
 	const showProfileBox = () => {

@@ -1,13 +1,7 @@
+import { ApiResponseType } from "./apiResponse";
+
 export type GetNewReleaseResponseType = {
-    albums: {
-        href: string;
-        limit: number;
-        next: string | null;
-        offset: number;
-        previous: string | null;
-        total: number;
-        items: SimplifiedAlbumObjectType[];
-    };
+    albums: ApiResponseType<SimplifiedAlbumObjectType>
 };
   
 export type SimplifiedAlbumObjectType = {

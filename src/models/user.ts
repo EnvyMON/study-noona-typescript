@@ -1,3 +1,5 @@
+import { ImageObjectType } from "./apiResponse";
+
 export type UserProfileType = {
     country?: string;
     display_name?: string;
@@ -19,10 +21,4 @@ export type UserProfileType = {
     product: string;
     type: string;
     uri: string;
-}
-  
-export type ImageObjectType = {
-    url: string;
-    height: number | null;
-    width: number | null;
 }

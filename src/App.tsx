@@ -1,5 +1,5 @@
 
-import { Route, Routes } from 'react-router'
+import { Route, Routes, useNavigate } from 'react-router'
 import './App.css'
 import React, { Suspense, useEffect } from 'react';
 import LoadingSpinner from './common/components/LoadingSpinner';
@@ -14,17 +14,17 @@ const HomePage = React.lazy(() => import('./page/HomePage/HomePage'));
 function App() {
 
 	const urlParams = new URLSearchParams(window.location.search);
-	let code = urlParams.get('code');
+	const code = urlParams.get('code');
 	const codeVerifier = localStorage.getItem('code_verifier');
 	const { mutate } = useExchangeToken();
+	const navigate = useNavigate();
 
 	useEffect(()=>{
 		if (code && codeVerifier){
 			mutate({code: code, codeVerifier: codeVerifier});
+			navigate('/')
 		}
-	}, [code, codeVerifier, mutate])
-	  
-
+	}, [code, codeVerifier, mutate, navigate])
 
 	return (
 		<Suspense fallback={<LoadingSpinner />}>
