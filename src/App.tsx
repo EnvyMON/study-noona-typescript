@@ -6,6 +6,7 @@ import LoadingSpinner from './common/components/LoadingSpinner';
 import { appRedirectUri, clientID } from './configs/authConfig';
 import { useExchangeToken } from './hooks/useExchangeToken';
 import { useMutation } from '@tanstack/react-query';
+import PlayListDetailPage from './page/PlayListDetailPage/PlayListDetailPage';
 
 const AppLayout = React.lazy(() => import('./layout/AppLayout'));
 const SearchPage = React.lazy(() => import('./page/SearchPage/SearchPage'));
@@ -33,6 +34,7 @@ function App() {
 				<Route path='/' element={<AppLayout />} >
 					<Route index element={<HomePage />} />
 					<Route path='search' element={<SearchPage />} />
+					<Route path='playlist/:id' element={<PlayListDetailPage />} />
 				</Route>
 			</Routes>
 		</Suspense>

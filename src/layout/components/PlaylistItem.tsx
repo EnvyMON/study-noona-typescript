@@ -13,19 +13,25 @@ const ContentBox = styled(Box)(({ theme })=>({
 	"&:hover": {
 		backgroundColor: theme.palette.action.hover,
 	},
-	
+	"&.active": {
+		backgroundColor: "rgba(29, 185, 84, 0.2)",
+	},
+
 }))
 
 type PlaylistItemProps = {
+	playlistId?: string;
 	playlistImg: string | null;
 	title: string | null;
 	ownerName: string | null;
 	type: string;
+	handleOnClick: (id?: string) => void;
+	isActive: boolean
 }
 
-const PlaylistItem = ({playlistImg, title, ownerName, type}: PlaylistItemProps) => {
+const PlaylistItem = ({playlistImg, title, ownerName, type, playlistId, handleOnClick, isActive}: PlaylistItemProps) => {
 	return (
-		<ContentBox>
+		<ContentBox onClick={()=>handleOnClick(playlistId)} className={isActive ? 'active' : ''}>
 			{
 				playlistImg ? (
 					<Avatar src={playlistImg} alt="이미지 설명" variant="square" sx={{ width: '70px', height: '74px', borderRadius: '8px' }}/>

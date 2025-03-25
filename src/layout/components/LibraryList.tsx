@@ -3,7 +3,8 @@ import { useGetLoginUserPlaylist, useGetLoginUserPlaylistInfinite } from '../../
 import EmptyPlayList from './EmptyPlayList'
 import PlaylistItem from './PlaylistItem';
 import { useInView } from "react-intersection-observer";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 const ContentBox = styled(Box)(({ theme })=>({
 	display: 'flex',
@@ -20,6 +21,8 @@ const ContentBox = styled(Box)(({ theme })=>({
 
 const LibraryList = () => {
 
+ 	const navigate = useNavigate();
+
 	// const { data } = useGetLoginUserPlaylist();
 	// console.log('dddd : ', data)
 	const { data, error, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetLoginUserPlaylistInfinite({limit: 10, offset: 0});
@@ -31,10 +34,14 @@ const LibraryList = () => {
 		} 
 	}, [inView])
 
-	useEffect(()=>{
-		console.log(data)
-	}, [data])
-
+	// active control
+	const [activeId, setActiveId] = useState("");
+	const handleOnClick = (id: string | undefined) => {
+		if (id){
+			setActiveId(id);
+			navigate(`/playlist/${id}`)
+		}
+	}
 
 	return (
 		<>
@@ -46,10 +53,13 @@ const LibraryList = () => {
 								item.items.map((item2, idx) => (
 									<PlaylistItem  
 										key={idx}
+										playlistId={item2.id}
 										playlistImg={(item2.images && item2.images.length > 0) ? item2.images[0].url : null}
 										title={item2.name || null} 
 										ownerName={item2.owner?.display_name || null}
 										type={item2.type || ""}
+										handleOnClick={handleOnClick}
+										isActive={activeId === item2.id}
 									/>
 								))
 							))
