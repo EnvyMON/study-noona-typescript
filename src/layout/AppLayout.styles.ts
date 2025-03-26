@@ -26,7 +26,8 @@ export const ContentBox = styled(Box)(({ theme })=>({
 	padding: '30px',
 	// marginBottom: '8px',
 	paddingLeft: '20px',
-	paddingRight: '20px'
+	paddingRight: '20px',
+	
 }))
 
 export const NavList = styled('ul')({

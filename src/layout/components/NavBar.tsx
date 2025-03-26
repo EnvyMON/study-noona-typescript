@@ -58,7 +58,8 @@ const NavBar = () => {
 			alignItems: 'center',
 			justifyContent: 'flex-end',
 			height: '64px',
-			paddingRight: '15px'
+			paddingRight: '15px',
+			marginBottom: '20px'
 		}}>
 			{
 				userProfile ? (
