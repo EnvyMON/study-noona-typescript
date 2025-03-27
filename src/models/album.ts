@@ -25,13 +25,13 @@ export type SimplifiedAlbumObjectType = {
     artists: SimplifiedArtistObjectType[];
 };
   
-type ImageObjectType = {
+export type ImageObjectType = {
     url: string;
     height: number | null;
     width: number | null;
 };
   
-type SimplifiedArtistObjectType = {
+export type SimplifiedArtistObjectType = {
     external_urls?: {
         spotify?: string;
     };

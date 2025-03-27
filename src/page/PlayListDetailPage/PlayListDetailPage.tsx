@@ -1,7 +1,10 @@
-import React from 'react'
-import { useNavigate, useParams } from 'react-router';
+import React, { useEffect } from 'react'
+import { Navigate, useNavigate, useParams } from 'react-router';
 import { useGetPlaylist } from '../../hooks/useGetPlaylist';
-import { Box, styled, Typography } from '@mui/material';
+import { Box, styled, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { useGetPlaylistItems } from '../../hooks/useGetPlaylistItems';
+import { useInView } from 'react-intersection-observer';
+import PlaylistTableItems from './components/PlaylistTableItems';
 
 
 const ContentBox = styled(Box)(()=>({
@@ -13,7 +16,7 @@ const ContentBox = styled(Box)(()=>({
 	padding: '30px 15px',
 }));
 
-const ImageBox = styled(Box)<{ imgSrc: string }>(({ imgSrc }) => ({
+const ImageBox = styled(Box, {shouldForwardProp: (prop) => prop !== 'imgSrc' })<{ imgSrc: string }>(({ imgSrc }) => ({
 	width: '150px',
 	height: '150px',
 	backgroundImage: `url(${imgSrc})`,
@@ -38,60 +41,93 @@ const TextBox = styled(Box)({
 	justifyContent: "center"
 })
 
-
+const PlaylistItemsBox = styled(Box)({
+	display: 'flex',
+	overflowY: "auto", // 세로 스크롤 가능하게 설정
+	scrollbarWidth: "none", // 스크롤바 숨김
+	width: '100%',
+	maxHeight: "550px"
+})
 
 const PlayListDetailPage = () => {
 
-	const navigate = useNavigate();
+	// const navigate = useNavigate();
 	const {id} = useParams();
-	if (!id){
-		navigate('/')
-		return null;
-	}
-	const { data } = useGetPlaylist({playlist_id: id})
+	const { data: playlist } = useGetPlaylist({playlist_id: id})
+	const { data: playListItems, error, hasNextPage, isFetchingNextPage, fetchNextPage} = useGetPlaylistItems({playlist_id: id || '', limit: 10});
+	const { ref, inView } = useInView();
+	useEffect(()=>{
+		if(inView && hasNextPage && !isFetchingNextPage){
+			fetchNextPage()
+		} 
+	}, [inView])
 
-	// if (!data?.images) {
-	// 	navigate('/')
-	// 	return null;
-	// }
+	if (id === undefined){
+		return <Navigate to={'/'} />;
+	}
 
 	return (
-		<ContentBox>
-			{
-				data?.images?.length && data?.images?.length > 0 ? (
-					<>
-						<ImageBox imgSrc={data?.images[0].url} />
-						<TextBox>
-							<Typography fontSize={"27pt"} fontWeight={'bold'}>
-								{data.name}
-							</Typography>
-							<Typography display={'flex'} alignItems={'center'} gap={'10px'} fontSize={'10pt'}>
-								<Box display={'flex'}> 
-									<img src={"https://i.scdn.co/image/ab67757000003b8255c25988a6ac314394d3fbf5"} width="24" height="24" />
+		<>
+			<ContentBox>
+				{
+					playlist?.images?.length && playlist?.images?.length > 0 ? (
+						<>
+							<ImageBox imgSrc={playlist?.images[0].url} />
+							<TextBox>
+								<Typography fontSize={"27pt"} fontWeight={'bold'}>
+									{playlist.name}
+								</Typography>
+								<Box display={'flex'} gap={'10px'}> 
+									<img src="https://i.scdn.co/image/ab67757000003b8255c25988a6ac314394d3fbf5" width="24" height="24" />
+									<Typography display={'flex'} alignItems={'center'} gap={'10px'} fontSize={'10pt'}>
+										{playlist.owner?.display_name} / {playlist.tracks?.total} Songs
+									</Typography>
 								</Box>
-								{data.owner?.display_name} / {data.tracks?.total} Songs
-							</Typography>
-						</TextBox>
-					</>
-				) : (
-					<>
-						<NoImageBox />
-						<TextBox>
-							<Typography fontSize={"27pt"} fontWeight={'bold'}>
-								{data?.name}
-							</Typography>
-							<Typography display={'flex'} alignItems={'center'} gap={'10px'} fontSize={'10pt'}>
-								<Box display={'flex'}> 
-									<img src={"https://i.scdn.co/image/ab67757000003b8255c25988a6ac314394d3fbf5"} width="24" height="24" />
+							</TextBox>
+						</>
+					) : (
+						<>
+							<NoImageBox />
+							<TextBox>
+								<Typography fontSize={"27pt"} fontWeight={'bold'}>
+									{playlist?.name}
+								</Typography>
+								<Box display={'flex'} gap={'10px'}> 
+									<img src="https://i.scdn.co/image/ab67757000003b8255c25988a6ac314394d3fbf5" width="24" height="24" />
+									<Typography display={'flex'} alignItems={'center'} gap={'10px'} fontSize={'10pt'}>
+										{playlist?.owner?.display_name} / {playlist?.tracks?.total} Songs
+									</Typography>
 								</Box>
-								{data?.owner?.display_name} / {data?.tracks?.total} Songs
-							</Typography>
-						</TextBox>
-					</>
-				)
-			}
-			
-		</ContentBox>
+							</TextBox>
+						</>
+					)
+				}
+				
+			</ContentBox>
+			<PlaylistItemsBox>
+				<Table>
+					<TableHead sx={{ position: 'sticky', top: 0, backgroundColor: "#121212", zIndex: 1}}>
+						<TableRow>
+							<TableCell>#</TableCell>
+							<TableCell>Title</TableCell>
+							<TableCell>Album</TableCell>
+							<TableCell>Date added</TableCell>
+							<TableCell>Duration</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+					{
+						playListItems?.pages?.map((page, pageIndex) =>
+							page.items.map((item, idx) => (
+								<PlaylistTableItems key={idx} item={item} indexNum={pageIndex * 10 + idx + 1}/>
+							))
+						)
+					}
+					</TableBody>
+				</Table>
+				<div ref={ref}></div>
+			</PlaylistItemsBox>
+		</>
 	)
 }
 
